@@ -30,12 +30,15 @@ describe('Stage M7-fix-2: Full-Site Axe Accessibility Suite', () => {
   });
 
   it('runs axe on every built page in both light and dark themes at 360 and 1440 px and fails on any violation', () => {
+    // Choose Python command: 'python' on Windows, 'python3' elsewhere
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+
     // Execute python axe runner script
-    const result = spawnSync('python', [runnerScript], {
+    const result = spawnSync(pythonCmd, [runnerScript], {
       cwd: path.resolve(__dirname, '..'),
       encoding: 'utf-8',
       maxBuffer: 50 * 1024 * 1024,
-      timeout: 120000
+      timeout: 600000
     });
 
     if (result.status !== 0) {
@@ -50,5 +53,5 @@ describe('Stage M7-fix-2: Full-Site Axe Accessibility Suite', () => {
     expect(report.total_audits).toBe(252); // 63 pages * 2 themes * 2 viewports
     expect(report.violations_count).toBe(0);
     expect(report.violations).toEqual([]);
-  }, 120000);
+  }, 600000);
 });

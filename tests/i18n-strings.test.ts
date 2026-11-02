@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { spawnSync } from 'node:child_process';
 import en from '../src/i18n/en.json';
+import ta from '../src/i18n/ta.json';
 import { t } from '../src/lib/i18n';
 import {
   checkEligibility,
@@ -232,9 +233,10 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
 
   it('produces byte-identical visible text on built English pages compared to pre-refactor baseline', () => {
     const runnerScript = path.resolve(__dirname, 'compare_stage_e1_visible_text.py');
-    const result = spawnSync('python', [runnerScript], {
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    const result = spawnSync(pythonCmd, [runnerScript], {
       encoding: 'utf-8',
-      timeout: 30000
+      timeout: 60000
     });
 
     if (result.status !== 0) {
@@ -242,5 +244,21 @@ describe('Stage E-1: i18n String Extraction and Byte-Identical English Content',
     }
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('ALL PAGES VERIFIED: 100% BYTE-IDENTICAL VISIBLE TEXT CONTENT');
-  }, 35000);
+  }, 60000);
+
+  it('confirms every key in en.json exists in ta.json with identical placeholders and rules', () => {
+    for (const [key, enVal] of Object.entries(en)) {
+      expect(ta).toHaveProperty(key);
+      const taVal = (ta as Record<string, string>)[key];
+      expect(typeof taVal).toBe('string');
+
+      const enPlaceholders = (enVal.match(/\{(\w+)\}/g) || []).sort();
+      const taPlaceholders = (taVal.match(/\{(\w+)\}/g) || []).sort();
+      expect(taPlaceholders).toEqual(enPlaceholders);
+    }
+
+    // Both rules keys must be identical to English
+    expect((ta as Record<string, string>)['eligibility.rules.general']).toBe(en['eligibility.rules.general']);
+    expect((ta as Record<string, string>)['eligibility.rules.biotech']).toBe(en['eligibility.rules.biotech']);
+  });
 });

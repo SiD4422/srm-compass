@@ -8,7 +8,9 @@ SRM Compass is an offline-first, pure Static Site Generated (SSG) web applicatio
 
 ## Dependency Audit (`npm audit`)
 
-As part of security auditing, `npm audit` was evaluated. Eight vulnerability advisories exist in build-time and development tooling:
+npm audit reports eight advisories in build-time tools (including Astro, Vite and Vitest). They run on the developer machine, not in the shipped pages. See SECURITY.md.
+
+Specifically:
 
 ### 1. Vitest & Tinypool Tooling
 - **Advisories:**

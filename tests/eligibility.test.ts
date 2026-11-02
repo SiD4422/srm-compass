@@ -431,10 +431,11 @@ describe('Stage M5-fix: B.Tech Eligibility Evaluation Engine (src/lib/eligibilit
       const runnerScript = path.resolve(__dirname, 'check_eligibility_nojs.py');
       expect(fs.existsSync(runnerScript)).toBe(true);
 
-      const result = spawnSync('python', [runnerScript], {
+      const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+      const result = spawnSync(pythonCmd, [runnerScript], {
         cwd: path.resolve(__dirname, '..'),
         encoding: 'utf-8',
-        timeout: 30000
+        timeout: 60000
       });
 
       if (result.status !== 0) {

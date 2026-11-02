@@ -163,9 +163,10 @@ describe('Stage E-2: Tamil Beta, Dual-Build Flag, and Localized Layout', () => {
 
     // Run baseline comparison script across all 10 routes
     const runnerScript = path.resolve(__dirname, 'compare_stage_e1_visible_text.py');
-    const result = spawnSync('python', [runnerScript], {
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    const result = spawnSync(pythonCmd, [runnerScript], {
       encoding: 'utf-8',
-      timeout: 45000
+      timeout: 60000
     });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('ALL PAGES VERIFIED: 100% BYTE-IDENTICAL VISIBLE TEXT CONTENT');

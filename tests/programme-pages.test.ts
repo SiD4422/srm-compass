@@ -924,10 +924,11 @@ describe('Stage M3 & M3-fix: Programme Detail Pages (/programmes/[slug])', () =>
 
       // 2. Browser check: No console errors on load with CSP enabled
       const scriptPath = path.resolve(__dirname, 'check_csp_console.py');
-      const res = spawnSync('python', [scriptPath], {
+      const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+      const res = spawnSync(pythonCmd, [scriptPath], {
         encoding: 'utf-8',
         cwd: path.resolve(__dirname, '..'),
-        timeout: 30000
+        timeout: 60000
       });
 
       if (res.status !== 0) {

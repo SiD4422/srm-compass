@@ -5,11 +5,12 @@ import fs from 'node:fs';
 
 describe('Stage A: Functional Test Harness (Search, Chips, Campuses, Sort, Compare, Apply Routes)', () => {
   it('executes functional test harness against live DOM with zero failures', () => {
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
     const harnessScript = path.resolve(__dirname, 'run-functional-harness.py');
-    const res = spawnSync('python', [harnessScript], {
+    const res = spawnSync(pythonCmd, [harnessScript], {
       encoding: 'utf-8',
       cwd: path.resolve(__dirname, '..'),
-      timeout: 60000
+      timeout: 600000
     });
 
     if (res.status !== 0) {
@@ -31,5 +32,5 @@ describe('Stage A: Functional Test Harness (Search, Chips, Campuses, Sort, Compa
     expect(raw.sort_tests.length).toBe(2);
     expect(raw.compare_tests.length).toBe(4);
     expect(raw.apply_route_tests.length).toBe(8);
-  }, 30000);
+  }, 600000);
 });

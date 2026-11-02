@@ -19,16 +19,29 @@ All data is drawn from SRM documents captured on 26 October 2026 for the 2026-27
 
 ## Quality Gates and Testing
 
-This project enforces automated testing and validation gates:
+This project enforces automated testing and validation gates.
 
+### Prerequisites for Browser Tests
+Running browser tests (`npm run test:e2e` and full `npm test`) requires:
+- Python 3.10 or later
+- `pip install playwright`
+- `playwright install chromium`
+
+### Test Commands & Expected Run Times
 ```bash
-# 1. Validate data offerings and stories against source hashes
+# 1. Validate data offerings and stories against source hashes (expected run time: ~2s)
 npm run verify
 
-# 2. Run automated test suite (189 tests: unit, DOM, No-JS resilience, Axe accessibility)
+# 2. Fast unit tests with no browser (187 tests, expected run time: ~45s)
+npm run test:unit
+
+# 3. Browser tests (Axe accessibility on 63 pages + DOM harness, expected run time: ~45s)
+npm run test:e2e
+
+# 4. Full test suite running unit and browser tests (190 tests, expected run time: ~90s)
 npm test
 
-# 3. Build static distribution (63 pre-rendered pages)
+# 5. Build static distribution (63 pre-rendered pages, expected run time: ~3s)
 npm run build
 ```
 
@@ -37,6 +50,7 @@ What is tested:
 - **Eligibility logic**: Automated tests check subject combinations (PCM/PMB), non-decimal input handling, age thresholds, and informational notes.
 - **Accessibility**: Automated Axe checks test every built page in both light and dark themes at 360 px and 1440 px viewports for color contrast, landmark structure, and labels.
 - **No-JS resilience**: Form submission behavior is tested with JavaScript disabled to confirm URL query strings do not expose user inputs.
+- **i18n completeness**: Automated test confirms every key in `en.json` exists in `ta.json` with matching placeholders and verbatim regulatory rules.
 
 ---
 
@@ -56,4 +70,4 @@ What is tested:
   Cache-Control: public, max-age=31536000, immutable
 ```
 - **Privacy Design**: The eligibility form uses `method="post"` and client-side JavaScript execution, preventing marks and dates of birth from appending to browser history or server access logs.
-- **Dependency Audit**: Detailed in [SECURITY.md](SECURITY.md).
+- **Dependency Audit**: npm audit reports eight advisories in build-time tools (including Astro, Vite and Vitest). They run on the developer machine, not in the shipped pages. See SECURITY.md.
