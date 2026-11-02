@@ -1,0 +1,37 @@
+name: Upstream Data Drift & Integrity Monitor
+
+on:
+  schedule:
+    # Run every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/**'
+      - 'scripts/**'
+
+jobs:
+  drift-check:
+    name: Check Upstream Admissions Data Drift
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate dataset schemas and SHA-256 signatures
+        run: npm run verify
+
+      - name: Probe upstream SRM endpoints for structural drift
+        run: npx tsx scripts/check-drift.ts

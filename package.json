@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "verify": "tsx scripts/verify.ts",
+    "check:drift": "tsx scripts/check-drift.ts",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run --exclude '**/axe-all-pages.test.ts' --exclude '**/functional-harness.test.ts'",
     "test:e2e": "vitest run tests/axe-all-pages.test.ts tests/functional-harness.test.ts"

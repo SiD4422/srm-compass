@@ -14,6 +14,7 @@ All data is drawn from SRM documents captured on 26 October 2026 for the 2026-27
 - **Student Stories (`/stories`)**: Engineering projects and startups built by SRM alumni and students (Camber Racing, Neur Industries, Torus Robotics, etc.).
 - **Application Route Chooser (`/apply`)**: Guidance for SRMJEEE and 8 academic entrance routes with helpline details and direct portal links.
 - **Evidence & Methodology (`/evidence`)**: Grounding evidence, source audit trails, and multi-run Lighthouse performance scores.
+- **Campus Transit & Decision Guide**: Comprehensive guide across all 6 campuses covering transit, railway/airport connectivity, campus settings, and fee spectrums ([docs/CAMPUS_GUIDE.md](docs/CAMPUS_GUIDE.md)).
 
 ---
 
@@ -32,16 +33,19 @@ Running browser tests (`npm run test:e2e` and full `npm test`) requires:
 # 1. Validate data offerings and stories against source hashes (expected run time: ~2s)
 npm run verify
 
-# 2. Fast unit tests with no browser (187 tests, expected run time: ~45s)
+# 2. Check for upstream data drift across live endpoints (expected run time: ~3s)
+npm run check:drift
+
+# 3. Fast unit tests with no browser (187 tests, expected run time: ~45s)
 npm run test:unit
 
-# 3. Browser tests (Axe accessibility on 63 pages + DOM harness, expected run time: ~45s)
+# 4. Browser tests (Axe accessibility on 63 pages + DOM harness, expected run time: ~45s)
 npm run test:e2e
 
-# 4. Full test suite running unit and browser tests (190 tests, expected run time: ~90s)
+# 5. Full test suite running unit and browser tests (190 tests, expected run time: ~90s)
 npm test
 
-# 5. Build static distribution (63 pre-rendered pages, expected run time: ~3s)
+# 6. Build static distribution (63 pre-rendered pages, expected run time: ~3s)
 npm run build
 ```
 
@@ -70,4 +74,5 @@ What is tested:
   Cache-Control: public, max-age=31536000, immutable
 ```
 - **Privacy Design**: The eligibility form uses `method="post"` and client-side JavaScript execution, preventing marks and dates of birth from appending to browser history or server access logs.
+- **Continuous Drift Monitoring**: Scheduled GitHub Actions workflow ([.github/workflows/drift-monitor.yml](.github/workflows/drift-monitor.yml)) monitors upstream SRM admissions pages for structural changes and data drift.
 - **Dependency Audit**: npm audit reports eight advisories in build-time tools (including Astro, Vite and Vitest). They run on the developer machine, not in the shipped pages. See SECURITY.md.
